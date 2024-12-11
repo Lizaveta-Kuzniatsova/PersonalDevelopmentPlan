@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LX.PersonalDevelopmentPlan.Tests;
@@ -34,13 +35,18 @@ public class DateTimeParsingTests
         Assert.True(parseResult);
         Assert.Equal(new DateTime(2024, 8, 31, 23, 0, 0), resultDate);
     }
-
-    public static DateTime CreateDateTime(params int[] date) => new DateTime(date[0], date[1], date[2], date[3], date[4], date[5]);
-
+    public static IEnumerable<object[]> GetDate(int num)
+    {
+        var allDates = new List<object[]>
+        {
+            new object[] {"7/10/2024 13:09", new DateTime(2024, 7, 10, 13, 9, 0)},
+            new object[] {"8/31/2024 23:00", new DateTime(2024, 8, 31, 23, 0, 0)},
+        };
+        return allDates.Take(num);
+    }
     [Theory]
-    [InlineData("7/10/2024 13:09", 2024, 7, 10, 13, 9, 0)]
-    [InlineData("8/31/2024 23:00", 2024, 8, 31, 23, 0, 0)]
-    public void Parse_TwoStringsToDateTime_True(string date, params int[] expectedDate)
+    [MemberData(nameof(GetDate), parameters: 2)]
+    public void Parse_TwoStringsToDateTime_True(string date, DateTime expectedDate)
     {
         //Arrange
         string dateString = date;
@@ -51,6 +57,6 @@ public class DateTimeParsingTests
 
         //Assert
         Assert.True(parseResult);
-        Assert.Equal(CreateDateTime(expectedDate), resultDate);
+        Assert.Equal(expectedDate, resultDate);
     }
 }
