@@ -1,20 +1,32 @@
-﻿using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Globalization;
+using Xunit.Abstractions;
 
 namespace LX.PersonalDevelopmentPlan.Tests;
 
-public class DateTimeParsingTests
+public partial class DateTimeParsingTests
 {
+    private readonly ITestOutputHelper _console;
+    public DateTimeParsingTests(ITestOutputHelper console)
+    {
+        _console = console;
+    }
+
     [Fact]
     public void Parse_FirstStringToDateTime_True()
     {
         //Arrange
+        var currentCulture = CultureInfo.CurrentCulture;
+        _console.WriteLine("Current Culture: " + currentCulture.Name);
+
+        var currentUICulture = CultureInfo.CurrentUICulture;
+        _console.WriteLine("Current UI Culture: " + currentUICulture.Name);
+
         string dateString = "7/10/2024 13:09";
+        var invariantCulture = CultureInfo.InvariantCulture;
         DateTime resultDate;
 
         //Act
-        bool parseResult = DateTime.TryParse(dateString, out resultDate);
+        bool parseResult = DateTime.TryParse(dateString, invariantCulture, out resultDate);
 
         //Assert
         Assert.True(parseResult);
@@ -29,7 +41,7 @@ public class DateTimeParsingTests
         DateTime resultDate;
 
         //Act
-        bool parseResult = DateTime.TryParse(dateString, out resultDate);
+        bool parseResult = DateTime.TryParse(dateString, TestSettings.USCulture, out resultDate);
 
         //Assert
         Assert.True(parseResult);
@@ -44,16 +56,17 @@ public class DateTimeParsingTests
         };
         return allDates.Take(num);
     }
+
     [Theory]
     [MemberData(nameof(GetDate), parameters: 2)]
-    public void Parse_TwoStringsToDateTime_True(string date, DateTime expectedDate)
+    public void Parse_StringToDateTime_ShouldReturnsExpectedDate(string date, DateTime expectedDate)
     {
         //Arrange
         string dateString = date;
         DateTime resultDate;
 
         //Act
-        bool parseResult = DateTime.TryParse(dateString, out resultDate);
+        bool parseResult = DateTime.TryParse(dateString, TestSettings.USCulture, out resultDate);
 
         //Assert
         Assert.True(parseResult);
