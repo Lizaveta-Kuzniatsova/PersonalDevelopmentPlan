@@ -3,7 +3,7 @@ using Xunit.Abstractions;
 
 namespace LX.PersonalDevelopmentPlan.Tests;
 
-public partial class DateTimeParsingTests
+public class DateTimeParsingTests
 {
     private readonly ITestOutputHelper _console;
     public DateTimeParsingTests(ITestOutputHelper console)
